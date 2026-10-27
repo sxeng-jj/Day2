@@ -159,6 +159,7 @@
       </div>
       <div class="dots" id="dots"></div>
       <div class="pager" id="pager">
+        <button id="toggle">⏸ 일시정지</button>
         <button id="pagePrev">« 이전 10개</button>
         <span id="pageInfo"></span>
         <button id="pageNext">다음 10개 »</button>
@@ -228,6 +229,7 @@
         if (!data.hits.length) { $('msg').textContent = '검색 결과가 없습니다.'; return; }
         hits = data.hits; total = data.totalHits; page = p; idx = 0;
         render();
+        startAuto();
       } catch (e) {
         $('msg').textContent = e.message + ' (Vercel에 배포된 주소에서만 동작합니다)';
       }
@@ -249,6 +251,20 @@
     }
 
     function go(d) { idx = (idx + d + hits.length) % hits.length; render(); }
+
+    // 0.5초마다 다음 이미지로 자동 슬라이드
+    let timer = null;
+    function startAuto() {
+      stopAuto();
+      timer = setInterval(() => go(1), 500);
+      $('toggle').textContent = '⏸ 일시정지';
+    }
+    function stopAuto() {
+      clearInterval(timer);
+      timer = null;
+      $('toggle').textContent = '▶ 재생';
+    }
+    $('toggle').onclick = () => (timer ? stopAuto() : startAuto());
 
     $('searchBtn').onclick = () => load(1);
     $('q').addEventListener('keydown', e => { if (e.key === 'Enter') load(1); });
