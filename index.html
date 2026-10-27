@@ -121,6 +121,9 @@
     .pager button:disabled { opacity: .4; cursor: default; }
     .credit { font-size: 0.75rem; color: #888; text-align: center; margin: 8px 0 0; }
 
+    #chatBtn { position: fixed; right: 20px; bottom: 20px; z-index: 10; padding: 14px 20px; font-size: 1rem; border: 0; border-radius: 999px; background: #ff6b35; color: #fff; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,.25); }
+    #chatPanel { position: fixed; right: 20px; bottom: 80px; z-index: 10; width: 360px; height: 520px; max-width: calc(100vw - 40px); max-height: calc(100vh - 100px); border: 0; border-radius: 14px; background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.3); display: none; }
+
     @media (max-width: 720px) {
       .layout {
         grid-template-columns: 1fr;
@@ -212,6 +215,21 @@
       🌴 혼저옵서예! 제주 특산물 이야기 &copy; 2026
     </footer>
   </div>
+
+  <button id="chatBtn">💬 에이전트와 채팅</button>
+  <iframe id="chatPanel" title="제주 특산물 에이전트 채팅"></iframe>
+
+  <script>
+    // 버튼을 누르면 agent.html을 불러와 채팅 화면을 열고, 다시 누르면 닫는다
+    const chatBtn = document.getElementById('chatBtn');
+    const chatPanel = document.getElementById('chatPanel');
+    chatBtn.addEventListener('click', () => {
+      const open = chatPanel.style.display === 'block';
+      if (!open && !chatPanel.src) chatPanel.src = 'agent.html';
+      chatPanel.style.display = open ? 'none' : 'block';
+      chatBtn.textContent = open ? '💬 에이전트와 채팅' : '✖ 채팅 닫기';
+    });
+  </script>
 
   <script>
     const PER_PAGE = 10;
