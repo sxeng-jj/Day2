@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>부품 지도</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; padding: 24px 16px; background: #f5f5f7; color: #222; }
+    h1 { font-size: 1.3rem; margin: 0 0 4px; text-align: center; }
+    p.sub { margin: 0 0 20px; color: #666; font-size: 0.9rem; text-align: center; }
+    .wrap { max-width: 760px; margin: 0 auto; }
+    .row { display: flex; align-items: stretch; gap: 12px; margin-bottom: 12px; }
+    .tag { flex: 0 0 90px; align-self: center; background: #4a7dff; color: #fff; font-size: 0.85rem; padding: 6px 8px; border-radius: 999px; text-align: center; }
+    .tag.none { background: #aaa; }
+    .tag::after { content: " →"; }
+    .part { flex: 1; border: 2px dashed #4a7dff; border-radius: 8px; padding: 10px; background: #fff; }
+    .part.none { border-color: #bbb; color: #999; background: #fafafa; font-size: 0.9rem; }
+    .hdr { background: #4a7dff; color: #fff; padding: 10px 14px; border-radius: 6px; }
+    .hdr b { display: block; }
+    .tabs { display: flex; gap: 6px; }
+    .tabs span { padding: 4px 12px; border-radius: 999px; color: #4a7dff; }
+    .tabs span.on { background: #e6edff; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+    .card .n { font-size: 2.4rem; }
+    .btn { display: inline-block; font-size: 1.1rem; padding: 4px 16px; border: 1px solid #888; border-radius: 4px; background: #efefef; }
+    ol { margin: 0; padding-left: 1.6rem; line-height: 1.7; font-size: 0.9rem; }
+    .foot { text-align: center; color: #777; font-size: 0.85rem; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; margin-top: 20px; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eee; }
+    .yes { color: #1a8f3c; font-weight: bold; }
+    .no { color: #999; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🧩 index.html 부품 지도</h1>
+    <p class="sub">index.html의 화면 부품을 찾아 이름표를 붙였습니다. 회색 이름표는 index.html에 없는 부품입니다.</p>
+
+    <div class="row">
+      <div class="tag">헤더</div>
+      <div class="part"><div class="hdr"><b>내 취향 카드</b>버튼을 눌러 숫자를 올려 보세요</div></div>
+    </div>
+
+    <div class="row">
+      <div class="tag">탭</div>
+      <div class="part"><div class="tabs"><span class="on">홈</span><span>카드</span><span>소개</span></div></div>
+    </div>
+
+    <div class="row">
+      <div class="tag">카드</div>
+      <div class="part">
+        <div class="card">
+          <div>카운터</div>
+          <div class="n">0</div>
+          <div class="row" style="margin:0;justify-content:center">
+            <div class="tag" style="flex:0 0 70px">버튼</div>
+            <span class="btn">+2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="tag">목록</div>
+      <div class="part">
+        <div style="text-align:center;font-weight:bold;margin-bottom:6px">제주대학교 홍보 문구 100선</div>
+        <ol>
+          <li>🌊 푸른 바다와 한라산 사이…</li>
+          <li>🍊 제주의 가치를 세계로…</li>
+          <li>… (총 100개)</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="tag none">입력창</div>
+      <div class="part none">없음 (input·textarea 없음)</div>
+    </div>
+
+    <div class="row">
+      <div class="tag none">푸터</div>
+      <div class="part foot">© 2026 내 취향 카드</div>
+    </div>
+
+    <table>
+      <tr><th>부품</th><th>결과</th><th>index.html 근거</th></tr>
+      <tr><td>헤더</td><td class="yes">있음</td><td>&lt;header&gt;</td></tr>
+      <tr><td>카드</td><td class="yes">있음</td><td>&lt;section class="card"&gt; 2개 (카운터, 홍보 문구)</td></tr>
+      <tr><td>버튼</td><td class="yes">있음</td><td>&lt;button id="btn"&gt; (+2)</td></tr>
+      <tr><td>입력창</td><td class="no">없음</td><td>&lt;input&gt;·&lt;textarea&gt; 없음</td></tr>
+      <tr><td>탭</td><td class="yes">있음</td><td>&lt;nav&gt; 링크 3개 (홈·카드·소개), 탭처럼 쓰이는 메뉴</td></tr>
+      <tr><td>목록</td><td class="yes">있음</td><td>&lt;ol&gt; 100개 항목</td></tr>
+    </table>
+  </div>
+</body>
+</html>
