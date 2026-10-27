@@ -104,6 +104,23 @@
       font-size: 0.85rem;
     }
 
+    .search { display: flex; gap: 6px; margin-bottom: 8px; }
+    .search input { flex: 1; padding: 8px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; }
+    .search button, .pager button { padding: 8px 14px; border: 0; border-radius: 8px; background: #ff6b35; color: #fff; cursor: pointer; }
+    #msg { min-height: 1.3em; color: #c0392b; font-size: 0.85rem; }
+    .slider { position: relative; background: #000; border-radius: 12px; overflow: hidden; aspect-ratio: 4 / 3; display: none; }
+    .slider img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(255,255,255,.85); font-size: 1.3rem; cursor: pointer; }
+    #prev { left: 8px; } #next { right: 8px; }
+    .caption { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 10px; background: rgba(0,0,0,.55); color: #fff; font-size: 0.8rem; }
+    .caption a { color: #ffd9b8; }
+    .dots { display: flex; justify-content: center; gap: 6px; margin: 8px 0; }
+    .dots span { width: 9px; height: 9px; border-radius: 50%; background: #ddd; cursor: pointer; }
+    .dots span.on { background: #ff6b35; }
+    .pager { display: none; justify-content: center; align-items: center; gap: 10px; font-size: 0.9rem; }
+    .pager button:disabled { opacity: .4; cursor: default; }
+    .credit { font-size: 0.75rem; color: #888; text-align: center; margin: 8px 0 0; }
+
     @media (max-width: 720px) {
       .layout {
         grid-template-columns: 1fr;
@@ -128,7 +145,27 @@
     </nav>
 
     <section id="products">
-      <h2>🍊 대표 특산물</h2>
+      <h2 id="photos">📸 특산물 사진 검색</h2>
+      <div class="search">
+        <input id="q" type="text" value="제주 감귤" placeholder="검색어 (예: 한라봉, 갈치)">
+        <button id="searchBtn">검색</button>
+      </div>
+      <div id="msg"></div>
+      <div class="slider" id="slider">
+        <img id="img" alt="">
+        <button class="arrow" id="prev" aria-label="이전">‹</button>
+        <button class="arrow" id="next" aria-label="다음">›</button>
+        <div class="caption" id="caption"></div>
+      </div>
+      <div class="dots" id="dots"></div>
+      <div class="pager" id="pager">
+        <button id="pagePrev">« 이전 10개</button>
+        <span id="pageInfo"></span>
+        <button id="pageNext">다음 10개 »</button>
+      </div>
+      <p class="credit">이미지 제공: <a href="https://pixabay.com" target="_blank" rel="noopener">Pixabay</a></p>
+
+      <h2 style="margin-top:1.5rem">🍊 대표 특산물</h2>
       <div class="grid">
         <div class="item"><div class="emoji">🍊</div><h3>감귤</h3><p>제주를 대표하는 새콤달콤한 과일</p></div>
         <div class="item"><div class="emoji">🍋</div><h3>한라봉</h3><p>향이 진하고 달콤한 만감류</p></div>
@@ -174,5 +211,53 @@
       🌴 혼저옵서예! 제주 특산물 이야기 &copy; 2026
     </footer>
   </div>
+
+  <script>
+    const PER_PAGE = 10;
+    let hits = [], idx = 0, page = 1, total = 0;
+    const $ = id => document.getElementById(id);
+
+    async function load(p) {
+      const q = $('q').value.trim();
+      $('msg').textContent = '';
+      if (!q) { $('msg').textContent = '검색어를 입력하세요.'; return; }
+      try {
+        const res = await fetch('/api/pixabay?' + new URLSearchParams({ q, page: p }));
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || '오류 ' + res.status);
+        if (!data.hits.length) { $('msg').textContent = '검색 결과가 없습니다.'; return; }
+        hits = data.hits; total = data.totalHits; page = p; idx = 0;
+        render();
+      } catch (e) {
+        $('msg').textContent = e.message + ' (Vercel에 배포된 주소에서만 동작합니다)';
+      }
+    }
+
+    function render() {
+      const h = hits[idx];
+      $('slider').style.display = 'block';
+      $('pager').style.display = 'flex';
+      $('img').src = h.webformatURL;
+      $('img').alt = h.tags;
+      $('caption').innerHTML = '#' + h.tags.replace(/, /g, ' #') +
+        ' · by <a href="' + h.pageURL + '" target="_blank" rel="noopener">' + h.user + '</a>';
+      $('dots').innerHTML = hits.map((_, i) => '<span class="' + (i === idx ? 'on' : '') + '" data-i="' + i + '"></span>').join('');
+      const pages = Math.ceil(total / PER_PAGE);
+      $('pageInfo').textContent = page + ' / ' + pages;
+      $('pagePrev').disabled = page <= 1;
+      $('pageNext').disabled = page >= pages;
+    }
+
+    function go(d) { idx = (idx + d + hits.length) % hits.length; render(); }
+
+    $('searchBtn').onclick = () => load(1);
+    $('q').addEventListener('keydown', e => { if (e.key === 'Enter') load(1); });
+    $('prev').onclick = () => go(-1);
+    $('next').onclick = () => go(1);
+    $('dots').onclick = e => { if (e.target.dataset.i) { idx = +e.target.dataset.i; render(); } };
+    $('pagePrev').onclick = () => load(page - 1);
+    $('pageNext').onclick = () => load(page + 1);
+    load(1);
+  </script>
 </body>
 </html>
