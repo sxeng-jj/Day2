@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>반응형 메뉴</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+    body { margin: 0; font-family: "Malgun Gothic", sans-serif; background: #f4f6fb; color: #222; line-height: 1.6; }
+
+    .topbar { position: sticky; top: 0; z-index: 10; background: #243b6b; color: #fff; }
+    .bar { max-width: 1000px; margin: 0 auto; padding: 0 16px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-weight: bold; font-size: 1.2rem; text-decoration: none; color: #fff; }
+
+    .menu { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+    .menu a { display: block; padding: 8px 14px; color: #dbe5ff; text-decoration: none; border-radius: 8px; }
+    .menu a:hover, .menu a.active { background: rgba(255,255,255,.18); color: #fff; }
+
+    /* 햄버거 버튼: PC에서는 숨김 */
+    .burger { display: none; width: 44px; height: 44px; border: 0; background: none; cursor: pointer; padding: 10px; }
+    .burger span { display: block; height: 3px; margin: 6px 0; background: #fff; border-radius: 2px; transition: transform .25s, opacity .25s; }
+    .burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+    .burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+    main { max-width: 1000px; margin: 0 auto; padding: 20px 16px 40px; display: grid; gap: 16px; }
+    .hero { background: linear-gradient(135deg, #4a7dff, #243b6b); color: #fff; border-radius: 14px; padding: 2rem 1.2rem; text-align: center; }
+    .hero h1 { margin: 0 0 .3rem; font-size: clamp(1.4rem, 4vw + .5rem, 2.2rem); }
+    .hero p { margin: 0; opacity: .9; }
+    .cat { background: #fff; border-radius: 14px; padding: 1.2rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .cat h2 { margin: 0 0 .5rem; color: #243b6b; font-size: clamp(1.1rem, 1.5vw + .8rem, 1.4rem); }
+    .cat p { margin: 0; color: #555; }
+
+    @media (min-width: 900px) {
+      main { grid-template-columns: repeat(2, 1fr); }
+      .hero { grid-column: 1 / -1; }
+    }
+
+    /* 모바일: 메뉴를 숨기고 햄버거 아이콘으로 열고 닫기 */
+    @media (max-width: 720px) {
+      .burger { display: block; }
+      .menu { display: none; position: absolute; top: 56px; left: 0; right: 0; flex-direction: column; gap: 0; background: #243b6b; padding: 8px 16px 14px; box-shadow: 0 8px 14px rgba(0,0,0,.25); }
+      .menu.open { display: flex; }
+      .menu a { padding: 14px 8px; border-bottom: 1px solid rgba(255,255,255,.12); border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="logo" href="#top">🧭 반응형 메뉴</a>
+      <button class="burger" id="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav>
+        <ul class="menu" id="menu">
+          <li><a href="#food">🍜 음식</a></li>
+          <li><a href="#furniture">🛋️ 가구</a></li>
+          <li><a href="#realestate">🏠 부동산</a></li>
+          <li><a href="#stock">📈 주식</a></li>
+          <li><a href="#map">🗺️ 지도</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <h1>화면 크기에 맞춰 변하는 메뉴</h1>
+      <p>PC에서는 가로 메뉴, 모바일에서는 햄버거 아이콘으로 열립니다.</p>
+    </section>
+    <section class="cat" id="food"><h2>🍜 음식</h2><p>맛집, 레시피, 제철 음식 정보를 모아 보는 카테고리입니다.</p></section>
+    <section class="cat" id="furniture"><h2>🛋️ 가구</h2><p>침대, 소파, 책상 등 인테리어 가구를 둘러보는 카테고리입니다.</p></section>
+    <section class="cat" id="realestate"><h2>🏠 부동산</h2><p>매물과 지역 정보를 확인하는 카테고리입니다.</p></section>
+    <section class="cat" id="stock"><h2>📈 주식</h2><p>시장 동향과 종목 정보를 살펴보는 카테고리입니다.</p></section>
+    <section class="cat" id="map"><h2>🗺️ 지도</h2><p>위치와 길 찾기를 확인하는 카테고리입니다.</p></section>
+  </main>
+
+  <script>
+    const burger = document.getElementById('burger');
+    const menu = document.getElementById('menu');
+
+    function setOpen(open) {
+      menu.classList.toggle('open', open);
+      burger.setAttribute('aria-expanded', open);
+      burger.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+    }
+
+    burger.addEventListener('click', () => setOpen(!menu.classList.contains('open')));
+    // 메뉴 항목을 누르거나 PC 크기로 돌아오면 닫기
+    menu.addEventListener('click', e => { if (e.target.closest('a')) setOpen(false); });
+    window.addEventListener('resize', () => { if (innerWidth > 720) setOpen(false); });
+
+    // 현재 보고 있는 카테고리를 메뉴에 표시
+    const links = [...menu.querySelectorAll('a')];
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id));
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    document.querySelectorAll('.cat').forEach(s => io.observe(s));
+  </script>
+</body>
+</html>
