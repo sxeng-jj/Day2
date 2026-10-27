@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // head 안의 script 는 body 보다 먼저 실행되므로, 화면이 다 만들어진 뒤에 버튼을 연결한다
+        window.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('button').addEventListener('click', function () {
+                document.querySelector('h1').textContent = '안녕하세요';
+                document.querySelector('h2').textContent = '안녕하세요';
+            });
+        });
+    </script>
+</head>
+<body>
+    안녕하세요
+    <h1>
+        반갑습니다
+    </h1>
+    <h2>
+        반갑습니다
+    </h2>
+    <button>변경</button>
+</body>
+</html>
