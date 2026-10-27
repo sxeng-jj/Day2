@@ -181,6 +181,15 @@
     @media (max-width: 380px) {
       .grid { grid-template-columns: 1fr; }
     }
+    /* reactive.html 을 여는 버튼과 패널 (왼쪽 아래) */
+    #menuBtn { position: fixed; left: 20px; bottom: 20px; z-index: 10; width: 96px; height: 96px; padding: 0; font-size: 0.95rem; font-weight: bold; line-height: 1.3; border: 0; border-radius: 50%; background: #243b6b; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.35); transition: transform .15s; }
+    #menuBtn:hover { transform: scale(1.06); }
+    #menuBtn .ico { display: block; font-size: 2rem; }
+    #menuPanel { position: fixed; left: 20px; bottom: 128px; z-index: 10; width: 420px; height: 520px; max-width: calc(100vw - 40px); max-height: calc(100vh - 100px); border: 0; border-radius: 14px; background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.3); display: none; }
+    @media (max-width: 720px) {
+      #menuBtn { left: 12px; bottom: 12px; width: 84px; height: 84px; z-index: 20; }
+      #menuPanel { left: 0; right: 0; top: 0; bottom: 108px; width: 100%; height: auto; max-width: none; max-height: none; border-radius: 0; }
+    }
   </style>
 </head>
 <body>
@@ -269,6 +278,26 @@
   <button id="chatBtn">💬 에이전트와 채팅</button>
   <iframe id="chatPanel" title="제주 특산물 에이전트 채팅"></iframe>
 
+  <button id="menuBtn" aria-label="반응형 메뉴 열기"><span class="ico">📱</span>반응형</button>
+  <iframe id="menuPanel" title="반응형 메뉴 (reactive.html)"></iframe>
+
+  <script>
+    // 버튼을 누르면 reactive.html을 불러와 열고, 다시 누르면 닫는다 (채팅과 동시에 열리지 않음)
+    const menuBtn = document.getElementById('menuBtn');
+    const menuPanel = document.getElementById('menuPanel');
+    menuBtn.addEventListener('click', () => {
+      const open = menuPanel.style.display === 'block';
+      if (!open) {
+        if (!menuPanel.src) menuPanel.src = 'reactive.html';
+        const cp = document.getElementById('chatPanel');
+        if (cp.style.display === 'block') document.getElementById('chatBtn').click();
+      }
+      menuPanel.style.display = open ? 'none' : 'block';
+      menuBtn.innerHTML = open ? '<span class="ico">📱</span>반응형' : '<span class="ico">✖</span>닫기';
+      menuBtn.setAttribute('aria-label', open ? '반응형 메뉴 열기' : '반응형 메뉴 닫기');
+    });
+  </script>
+
   <script>
     // 버튼을 누르면 agent.html을 불러와 채팅 화면을 열고, 다시 누르면 닫는다
     const chatBtn = document.getElementById('chatBtn');
@@ -276,6 +305,7 @@
     chatBtn.addEventListener('click', () => {
       const open = chatPanel.style.display === 'block';
       if (!open && !chatPanel.src) chatPanel.src = 'agent.html';
+      if (!open && menuPanel.style.display === 'block') menuBtn.click();
       chatPanel.style.display = open ? 'none' : 'block';
       chatBtn.textContent = open ? '💬 에이전트와 채팅' : '✖ 채팅 닫기';
     });
